@@ -1,4 +1,4 @@
-package com.eazzyapps.test.data
+package com.eazzyapps.test.data.remote
 
 import com.eazzyapps.test.BuildConfig
 import com.squareup.moshi.Moshi
@@ -14,8 +14,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 object RemoteClient {
 
     private const val baseUrl = "https://api.github.com/"
-
-    private val rxAdapter = RxJava3CallAdapterFactory.create()
 
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
@@ -40,7 +38,6 @@ object RemoteClient {
 
     private val retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)
-        .addCallAdapterFactory(rxAdapter)
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .client(httpClient)
         .build()

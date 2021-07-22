@@ -1,34 +1,74 @@
 package com.eazzyapps.test.data
 
-import com.eazzyapps.test.data.models.toDomain
+import com.eazzyapps.test.data.local.AppDatabase
+import com.eazzyapps.test.data.local.models.toDomain
+import com.eazzyapps.test.data.remote.RepoClient
+import com.eazzyapps.test.data.remote.models.CommitInfoDto
+import com.eazzyapps.test.data.remote.models.toLocal
 import com.eazzyapps.test.domain.Repository
 import com.eazzyapps.test.domain.models.CommitInfo
 import com.eazzyapps.test.domain.models.GitHubRepo
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
-class RepositoryImpl @Inject constructor(private val client: RepoClient) : Repository {
+class RepositoryImpl @Inject constructor(
+
+    private val remoteClient: RepoClient,
+    private val db: AppDatabase
+
+) : Repository {
+
+    override fun getRepositoryById(id: Int): Observable<List<GitHubRepo>> {
+        return db.reposDao().findRepoById(id)
+            .subscribeOn(Schedulers.io())
+            .map { it.toDomain() }
+    }
 
     // no pagination implemented
     override fun getPublicRepositories(owner: String): Observable<List<GitHubRepo>> {
-        return client.getPublicRepositories(owner).map { it.toDomain() }
+        return db.reposDao().loadAll()
+            .subscribeOn(Schedulers.io())
+            .doOnNext { list ->
+                if (list.isEmpty()) fetchRemoteRepositories(owner)
+            }
+            .filter { it.isNotEmpty() }
+            .map { it.toDomain() }
     }
 
     // get all commits at once
     // for pagination used next page link from response headers
-    override fun getRepositoryCommits(owner: String, repoName: String): Observable<List<CommitInfo>> {
-        return Observable.create<List<CommitInfo>> { emitter ->
-            var nextLink: String? =
-                "https://api.github.com/repos/$owner/$repoName/commits?per_page=100&page=1"
-            while (nextLink != null) {
-                val response = client.getRepositoryCommits(nextLink).execute()
-                if (response.isSuccessful) {
-                    nextLink = response.headers()["link"]?.parseLinks()?.get("next")
-                    emitter.onNext(response.body()?.toDomain())
-                } else emitter.onError(Exception("Error with code ${response.code()} received"))
+    override fun getRepositoryCommits(repo: GitHubRepo): Observable<List<CommitInfo>> {
+        return db.commitsDao().loadCommitsForRepo(repo.id)
+            .subscribeOn(Schedulers.io())
+            .doOnNext { list ->
+                if (list.isEmpty()) fetchRemoteRepositoryCommits(repo)
             }
-            emitter.onComplete()
-        }.scan { t1, t2 -> t1.plus(t2) }.takeLast(1)
+            .filter { it.isNotEmpty() }
+            .map { it.toDomain() }
+    }
+
+    private fun fetchRemoteRepositories(owner: String) {
+        val response = remoteClient.getPublicRepositories(owner).execute()
+        if (response.isSuccessful) {
+            if (response.body() != null && response.body()!!.isNotEmpty()) {
+                db.reposDao().insertAll(response.body()!!.toLocal())
+            } else throw Exception("Received no repositories")
+        } else throw Exception("Error while fetching repositories (code: ${response.code()})")
+    }
+
+    private fun fetchRemoteRepositoryCommits(repo: GitHubRepo) {
+        val commits = mutableListOf<CommitInfoDto>()
+        var nextLink: String? = "https://api.github.com/repos/${repo.owner}/${repo.name}/commits?per_page=100&page=1"
+        while (nextLink != null) {
+            val response = remoteClient.getRepositoryCommits(nextLink).execute()
+            if (response.isSuccessful) {
+                nextLink = response.headers()["link"]?.parseLinks()?.get("next")
+                commits.addAll(response.body() ?: listOf())
+            } else throw Exception("Error while fetching commits (code: ${response.code()})")
+        }
+        db.commitsDao().insertAll(commits.toLocal(repo.id))
     }
 
     // link header in response

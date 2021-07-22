@@ -8,6 +8,8 @@ interface Repository {
 
     fun getPublicRepositories(owner: String): Observable<List<GitHubRepo>>
 
-    fun getRepositoryCommits(owner: String, repoName: String): Observable<List<CommitInfo>>
+    fun getRepositoryById(id: Int): Observable<List<GitHubRepo>>
+
+    fun getRepositoryCommits(repo: GitHubRepo): Observable<List<CommitInfo>>
 
 }

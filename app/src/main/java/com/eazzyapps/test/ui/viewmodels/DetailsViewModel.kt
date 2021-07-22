@@ -43,10 +43,11 @@ class DetailsViewModel @AssistedInject constructor(
     init {
 
         disposables.add(
-            repository.getRepositoryCommits(OWNER, repo.name)
+            repository.getRepositoryById(repo.id)
                 .doOnSubscribe { isLoading.set(true) }
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .map { it.first() }
+                .flatMap { repository.getRepositoryCommits(it) }
                 .doOnNext { isLoading.set(false) }
                 .subscribeBy(
                     onNext = { commits ->

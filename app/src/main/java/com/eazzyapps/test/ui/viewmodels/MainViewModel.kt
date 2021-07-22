@@ -37,13 +37,11 @@ class MainViewModel @Inject constructor(repo: Repository) : ViewModel() {
 
         disposables.add(
             repo.getPublicRepositories(OWNER)
-                .doOnSubscribe { isLoading.set(true) }
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext { isLoading.set(false) }
+                .doOnNext { hideError(); isLoading.set(false) }
+                .doOnError { isLoading.set(false) }
                 .subscribeBy(
                     onNext = { repos ->
-                        hideError()
                         publicRepos.set(
                             repos.map { repo ->
                                 RepoItemViewModel(
@@ -57,7 +55,6 @@ class MainViewModel @Inject constructor(repo: Repository) : ViewModel() {
                         )
                     },
                     onError = { e ->
-                        isLoading.set(false)
                         showError(e.message ?: "Smth happened!!!")
                     }
                 )

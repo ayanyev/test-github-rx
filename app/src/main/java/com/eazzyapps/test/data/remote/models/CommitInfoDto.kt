@@ -1,6 +1,7 @@
-package com.eazzyapps.test.data.models
+package com.eazzyapps.test.data.remote.models
 
 
+import com.eazzyapps.test.data.local.models.CommitInfoLocal
 import com.eazzyapps.test.domain.models.CommitInfo
 import com.squareup.moshi.JsonClass
 
@@ -21,11 +22,13 @@ data class Author(
     val name: String
 )
 
-fun CommitInfoDto.toDomain() = CommitInfo(
+fun CommitInfoDto.toLocal(repoId: Int) = CommitInfoLocal(
     sha = sha,
+    repoId = repoId,
     date = commit.author.date,
-    author = commit.author.name,
-    message = commit.message
+    name = commit.author.name,
+    message = commit.message,
+    email = commit.author.email
 )
 
-fun List<CommitInfoDto>.toDomain() = map { it.toDomain() }
+fun List<CommitInfoDto>.toLocal(repoId: Int) = map { it.toLocal(repoId) }
