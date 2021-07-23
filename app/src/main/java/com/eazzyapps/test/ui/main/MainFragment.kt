@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.eazzyapps.test.ARG_REPO_ID
 import com.eazzyapps.test.R
 import com.eazzyapps.test.databinding.FragmentMainBinding
 import com.eazzyapps.test.ui.viewmodels.MainViewModel
@@ -32,7 +32,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         (requireActivity() as? AppCompatActivity)?.apply {
-            title = "Repositories list"
+            title = getString(R.string.title_main)
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
         return FragmentMainBinding.inflate(inflater, container, false)
@@ -47,7 +47,7 @@ class MainFragment : Fragment() {
                 .subscribeBy {
 
                     val fragment = DetailsFragment.newInstance().apply {
-                        arguments = bundleOf("repoId" to it)
+                        arguments = bundleOf(ARG_REPO_ID to it)
                     }
 
                     parentFragmentManager.beginTransaction()

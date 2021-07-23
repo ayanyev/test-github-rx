@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.eazzyapps.test.ARG_REPO_ID
+import com.eazzyapps.test.R
 import com.eazzyapps.test.databinding.FragmentDetailsBinding
 import com.eazzyapps.test.ui.viewmodels.DetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,7 +21,8 @@ class DetailsFragment : Fragment() {
     lateinit var detailsViewModelFactory: DetailsViewModel.AssistedFactory
 
     private val vm: DetailsViewModel by viewModels {
-        val repoId = arguments?.getInt("repoId") ?: throw Exception("No repo id argument found")
+        val repoId = arguments?.getInt(ARG_REPO_ID)
+            ?: throw Exception(getString(R.string.exception_no_arg, ARG_REPO_ID))
         DetailsViewModel.provideFactory(detailsViewModelFactory, repoId)
     }
 
@@ -28,7 +31,7 @@ class DetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         (requireActivity() as? AppCompatActivity)?.apply {
-            title = "Details"
+            title = getString(R.string.title_details)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
         return FragmentDetailsBinding.inflate(inflater, container, false)

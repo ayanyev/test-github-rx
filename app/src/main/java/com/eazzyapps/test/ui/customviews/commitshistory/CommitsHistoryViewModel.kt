@@ -13,8 +13,10 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class CommitsHistoryViewModel(
+
     commits: List<CommitInfo>,
     private val updateFrequencyInMillis: Long = 1_500
+
 ) : ViewModel() {
 
     val monthOne = ObservableField<MonthViewModel>()
@@ -44,7 +46,6 @@ class CommitsHistoryViewModel(
 
     fun startRotate() {
         val chunksCount = monthlyViewModels.size
-        Log.d(javaClass.simpleName, "months=$chunksCount")
         disposable = Observable.interval(0, updateFrequencyInMillis, TimeUnit.MILLISECONDS)
             .subscribeBy(
                 onNext = {

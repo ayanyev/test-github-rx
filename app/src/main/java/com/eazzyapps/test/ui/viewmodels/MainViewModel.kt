@@ -3,7 +3,7 @@ package com.eazzyapps.test.ui.viewmodels
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
-import com.eazzyapps.test.domain.OWNER
+import com.eazzyapps.test.ACCOUNT_OWNER
 import com.eazzyapps.test.domain.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -33,7 +33,7 @@ class MainViewModel @Inject constructor(repo: Repository) : ViewModel() {
     init {
 
         disposables.add(
-            repo.getPublicRepositories(OWNER)
+            repo.getPublicRepositories(ACCOUNT_OWNER)
                 .doOnSubscribe { isLoading.set(true) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext { hideError(); isLoading.set(false) }
