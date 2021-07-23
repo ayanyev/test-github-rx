@@ -6,11 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.eazzyapps.test.databinding.FragmentDetailsBinding
 import com.eazzyapps.test.ui.viewmodels.DetailsViewModel
-import com.eazzyapps.test.ui.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -20,10 +18,9 @@ class DetailsFragment : Fragment() {
     @Inject
     lateinit var detailsViewModelFactory: DetailsViewModel.AssistedFactory
 
-    private val sharedVm: MainViewModel by activityViewModels()
-
     private val vm: DetailsViewModel by viewModels {
-        DetailsViewModel.provideFactory(detailsViewModelFactory, sharedVm.selectedRepo!!)
+        val repoId = arguments?.getInt("repoId") ?: throw Exception("No repo id argument found")
+        DetailsViewModel.provideFactory(detailsViewModelFactory, repoId)
     }
 
     override fun onCreateView(

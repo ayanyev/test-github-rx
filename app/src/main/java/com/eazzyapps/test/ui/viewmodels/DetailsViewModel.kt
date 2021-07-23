@@ -13,47 +13,34 @@ import dagger.assisted.AssistedInject
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.subscribeBy
-import io.reactivex.rxjava3.schedulers.Schedulers
 
 class DetailsViewModel @AssistedInject constructor(
-    @Assisted repo: GitHubRepo,
+
+    @Assisted repoId: Int,
     repository: Repository
+
 ) : ViewModel() {
 
     private val disposables = CompositeDisposable()
 
-    val id: String = "${repo.id}"
+    val details = ObservableField<Details>()
 
-    val name: String = repo.name
-
-    val owner: String = repo.owner
-
-    val desc: String = repo.description ?: "no description provided"
-
-    val license: String = repo.license ?: "no license selected"
-
-    val date: String = repo.createdAt ?: "no date"
+    val commits = ObservableField<CommitsHistoryViewModel>()
 
     val isLoading = ObservableBoolean(false)
-
-    private var commitsVm: CommitsHistoryViewModel? = null
-
-    val commitsViewModel = ObservableField<CommitsHistoryViewModel>(commitsVm)
 
     init {
 
         disposables.add(
-            repository.getRepositoryById(repo.id)
+            repository.getRepositoryById(repoId)
                 .doOnSubscribe { isLoading.set(true) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { it.first() }
+                .doOnNext { details.set(Details(it)) }
                 .flatMap { repository.getRepositoryCommits(it) }
                 .doOnNext { isLoading.set(false) }
                 .subscribeBy(
-                    onNext = { commits ->
-                        commitsVm = CommitsHistoryViewModel(commits)
-                        commitsViewModel.set(commitsVm)
-                    },
+                    onNext = { c -> commits.set(CommitsHistoryViewModel(c)) },
                     onError = { e -> Log.e(javaClass.simpleName, e.message ?: "smth happened") }
                 )
         )
@@ -61,33 +48,47 @@ class DetailsViewModel @AssistedInject constructor(
     }
 
     fun onResume() {
-        commitsVm?.startRotate()
+        commits.get()?.startRotate()
     }
 
     fun onPause() {
-        commitsVm?.stopRotate()
+        commits.get()?.stopRotate()
     }
 
     override fun onCleared() {
         disposables.dispose()
     }
 
+    class Details(repo: GitHubRepo) {
+
+        val id: String = "${repo.id}"
+
+        val name: String = repo.name
+
+        val owner: String = repo.owner
+
+        val desc: String = repo.description ?: "no description provided"
+
+        val license: String = repo.license ?: "no license selected"
+
+        val date: String = repo.createdAt ?: "no date"
+
+    }
+
     @dagger.assisted.AssistedFactory
     interface AssistedFactory {
-        fun create(repo: GitHubRepo): DetailsViewModel
+        fun create(repoId: Int): DetailsViewModel
     }
 
     companion object {
 
-        const val OWNER = "JakeWharton"
-
         fun provideFactory(
             assistedFactory: AssistedFactory,
-            repo: GitHubRepo
+            repoId: Int
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return assistedFactory.create(repo) as T
+                return assistedFactory.create(repoId) as T
             }
         }
 

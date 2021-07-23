@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:lines="1"
-                    android:text="@{viewModel.name}"
+                    android:text="@{viewModel.details.name}"
                     app:layout_constraintEnd_toStartOf="@+id/idText"
                     app:layout_constraintStart_toStartOf="@+id/ownerLabel"
                     app:layout_constraintTop_toBottomOf="@+id/nameLabel"
@@ -70,7 +70,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:lines="1"
-                    android:text="@{viewModel.id}"
+                    android:text="@{viewModel.details.id}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/nameText"
                     app:layout_constraintTop_toBottomOf="@+id/nameLabel"
@@ -94,7 +94,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:lines="1"
-                    android:text="@{viewModel.owner}"
+                    android:text="@{viewModel.details.owner}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/dateLabel"
                     app:layout_constraintTop_toBottomOf="@+id/ownerLabel"
@@ -119,7 +119,7 @@
                     android:layout_marginTop="1dp"
                     android:ellipsize="end"
                     android:lines="1"
-                    android:text="@{viewModel.date}"
+                    android:text="@{viewModel.details.date}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/licenseLabel"
                     app:layout_constraintTop_toBottomOf="@+id/dateLabel"
@@ -144,7 +144,7 @@
                     android:layout_marginTop="1dp"
                     android:ellipsize="end"
                     android:lines="1"
-                    android:text="@{viewModel.license}"
+                    android:text="@{viewModel.details.license}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/descLabel"
                     app:layout_constraintTop_toBottomOf="@+id/licenseLabel"
@@ -167,7 +167,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
-                    android:text="@{viewModel.desc}"
+                    android:text="@{viewModel.details.desc}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/descLabel"
                     tools:text="Some description" />
@@ -190,7 +190,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:viewModel="@{viewModel.commitsViewModel}" />
+                app:viewModel="@{viewModel.commits}" />
 
             <androidx.core.widget.ContentLoadingProgressBar
                 style="@style/Widget.AppCompat.ProgressBar"

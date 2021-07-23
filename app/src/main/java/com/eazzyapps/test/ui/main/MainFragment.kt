@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.eazzyapps.test.R
 import com.eazzyapps.test.databinding.FragmentMainBinding
 import com.eazzyapps.test.ui.viewmodels.MainViewModel
@@ -21,7 +23,7 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
-    private val vm: MainViewModel by activityViewModels()
+    private val vm: MainViewModel by viewModels()
 
     private val disposables = CompositeDisposable()
 
@@ -43,8 +45,13 @@ class MainFragment : Fragment() {
         disposables.add(
             vm.itemClicks
                 .subscribeBy {
+
+                    val fragment = DetailsFragment.newInstance().apply {
+                        arguments = bundleOf("repoId" to it)
+                    }
+
                     parentFragmentManager.beginTransaction()
-                        .replace(R.id.container, DetailsFragment.newInstance())
+                        .replace(R.id.container, fragment)
                         .addToBackStack(null)
                         .commit()
                 }
