@@ -1,4 +1,4 @@
-rootProject.name = "SC test"
+rootProject.name = "Github test"
 include ':app'
-include ':myapplicatio'
 include ':feature-repositories'
+include ':platform'
