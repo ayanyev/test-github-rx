@@ -1,6 +1,6 @@
 package com.ezzyapps.test.repositories.ui.details
 
-import com.eazzyapps.test.ImmediateSchedulersRule
+import com.ezzyapps.test.repositories.ImmediateSchedulersRule
 import com.ezzyapps.test.repositories.domain.Repository
 import io.mockk.every
 import io.mockk.mockk

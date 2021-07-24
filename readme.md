@@ -52,24 +52,24 @@ All tasks including bonus task are implemented according to requirements.
 ###### Used libraries
 * RxJava 3 + RxAndroid + RxKotlin
 * Retrofit 2 + OkHttp + Moshi
+* Room
 * Hilt 
 * Jetpack libraries (viewModel, fragment-ktx, constraintLayout)
 ###### Used solutions
 * MVVM
 * databinding
 * dependency injection
-* clean architecture (domain/data/ui separation)
-* custom view (ui) creation without subclassing View/ViewGroup 
-* custom chart view and list creation was done with the help of databinding
+* clean architecture (domain/data/ui separation within feature module)
+* custom chart view and list creation was done with the help of databinding without subclassing View/ViewGroup
 * shared view model used instead of passing repository object as fragment parameter
 ###### Not done but "must have" in real app
 * proper exception handling
 * pagination for repositories list
-* camel case naming of dto models fields
 * proper navigation (usage of Navigation component)
 ###### Hint for testers
-In order to avoid GitHub API restriction for non-authorized requests, please 
-add your GitHub API token into :app build.gradle file
+1. Database is cleared each time app is started
+2. In order to avoid GitHub API restriction for non-authorized requests, please 
+add your GitHub API token into :feature-repositories build.gradle file
 ```groovy
 buildConfigField("String", "TOKEN", "\"<token goes here>\"")
 ```

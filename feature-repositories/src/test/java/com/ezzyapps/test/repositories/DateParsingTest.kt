@@ -1,4 +1,4 @@
-package com.eazzyapps.test
+package com.ezzyapps.test.repositories
 
 import com.ezzyapps.test.repositories.ui.customviews.commitshistory.parseToMonthYear
 import org.junit.Test
@@ -9,7 +9,7 @@ import java.text.ParseException
 import java.util.*
 
 @RunWith(Parameterized::class)
-class MonthParsingTest(
+class DateParsingTest(
     private val isoDate: String,
     private val monthYear: String,
     private val local: Locale
