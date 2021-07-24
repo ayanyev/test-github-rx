@@ -38,8 +38,6 @@ class CommitsHistoryViewModel(
         .map { (k, v) -> MonthViewModel(maxMonthlyCount, v, k) }
         .chunked(3)
 
-    init { startRotate() }
-
     private var disposable: Disposable? = null
 
     private var currentChunk = 0
