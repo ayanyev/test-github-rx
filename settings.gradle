@@ -1,2 +1,4 @@
 rootProject.name = "SC test"
 include ':app'
+include ':myapplicatio'
+include ':feature-repositories'

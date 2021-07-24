@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="repo_name">Name</string>
+    <string name="repo_id">Id</string>
+    <string name="repo_owner">Owner</string>
+    <string name="repo_created_at">Created at</string>
+    <string name="repo_license">License</string>
+    <string name="repo_description">Description</string>
+    <string name="commits_history_title">Commits monthly distribution</string>
+    <string name="title_main">Repositories</string>
+    <string name="title_details">Details</string>
+    <string name="exception_no_arg">No %s argument found</string>
+</resources>
