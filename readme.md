@@ -1,3 +1,7 @@
+#### Implementation description
+
+All tasks including bonus task are implemented according to requirements.
+
 ### Requirements
 
 The Project needs to compile and be executable on a state of the art Android Phone. Use SDK Level 21
@@ -45,10 +49,6 @@ The user should be free to navigate back to the repository list and open up a di
 
 Animate the height changes in the bar with each new update.
 
-#### Implementation description
-
-All tasks including bonus task are implemented according to requirements.
-
 ###### Used libraries
 * RxJava 3 + RxAndroid + RxKotlin
 * Retrofit 2 + OkHttp + Moshi
@@ -56,6 +56,9 @@ All tasks including bonus task are implemented according to requirements.
 * Hilt 
 * Jetpack libraries (viewModel, fragment-ktx, constraintLayout)
 ###### Used solutions
+* application is modularized feature-wise. Adding new feature module might lead to creation of
+a common module for reusable code.
+* dependency management done with the help of [gradle platform module](https://docs.gradle.org/current/userguide/java_platform_plugin.html)
 * MVVM
 * databinding
 * dependency injection
